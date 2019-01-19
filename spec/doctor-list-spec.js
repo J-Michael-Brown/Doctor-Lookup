@@ -14,7 +14,7 @@ describe('DoctorList', function() {
       let getDoctorsTest = new DoctorList();
       expect(getDoctorsTest.doctors.length).toEqual(0);
       getDoctorsTest.getDoctors(meta);
-      expect(getDoctorsTest.doctors.length)).toBeGreaterThan(0);
+      expect(getDoctorsTest.doctors.length).toBeGreaterThan(0);
     });
   });
 
