@@ -1,15 +1,18 @@
 import $ from 'jquery';
+import { Doctor } from './doctor.js';
 
 class DoctorList {
   constructor(meta = false) {
     this.doctors = [];
+    this.meta = meta;
     if(meta) {
       this.getDoctors(meta);
-      this.meta = meta
     }
     this.apiCallResponse = false;
     return this;
   }
+
+
 
   getDoctors(meta) {
     if (this.meta == meta) {
@@ -17,33 +20,42 @@ class DoctorList {
     }
     this.meta = meta;
     let apiCall = this.apiCallResponse;
-    let updatedDoctors = this.doctors;
-    $.ajax({
-      url: 'https://api.betterdoctor.com/2016-03-01/doctors?',
-      type: 'GET',
-      data: {
-        user_key: process.env.exports.apiKey,
-        query: meta.query
-      },
-      success: function(response) {
-        if(response.meta.error){
-          console.log(`${response.meta.message}`);
-        } else {
-          apiCall = response;
-          response.data.forEach(function(doctor) {
-            updatedDoctors.push(doctor);
-          });
-          console.log(`getDoctors() successfull api call`);
+    const updatedDoctors = [];
+
+    let promise = new Promise(function(success, failure) {
+      $.ajax({
+        url: meta.url,
+        type: 'GET',
+        data: {
+          user_key: process.env.exports.apiKey,
+          query: meta.query
+        },
+        success: function(response) {
+          if(response.meta.error){
+            console.log(`${response.meta.message}`);
+          } else {
+            apiCall = response;
+            response.data.forEach(function(doctorSnippet) {
+              updatedDoctors.push(new Doctor(doctorSnippet));
+            });
+            console.log(`first doctor's first name ${updatedDoctors[0].profile.first_name}`);
+            // console.log(`first doctor's last name (same call different position) ${updatedDoctors[0].profile.last_name}s`);
+          }
+        },
+        error: function() {
+          console.log('api call failure');
+          apiCall = false;
         }
-      },
-      error: function() {
-        console.log('api call failure');
-        apiCall = false;
-      }
+      });
     });
-    console.log(this.doctors[0]);
-    return this.doctors;
+    promise.then(function(response) {
+      debugger;
+      return updatedDoctors;
+    });
+
   }
+
+
 
   doctorsByName(name) {
     const doctorsWithName = [];
