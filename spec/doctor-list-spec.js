@@ -6,15 +6,15 @@ describe('DoctorList', function() {
   let meta;
   beforeEach(function() {
     meta = new Meta('acne');
-    testDoctors = new DoctorList(meta);
+    testDoctors = new DoctorList();
   });
 
   describe('getDoctors()', function() {
     it('should call the BetterDoctor API to generate a list of doctors within a given query parametere, and set the this.doctors array to this new list of doctors.', function() {
-      let getDoctorsTest = new DoctorList();
-      expect(getDoctorsTest.doctors.length).toEqual(0);
-      getDoctorsTest.getDoctors(meta);
-      expect(getDoctorsTest.doctors.length).toBeGreaterThan(0);
+      expect(testDoctors.doctors.length).toEqual(0);
+      testDoctors.getDoctors(meta);
+      expect(testDoctors.doctors.length).toBeGreaterThan(0);
+
     });
   });
 
