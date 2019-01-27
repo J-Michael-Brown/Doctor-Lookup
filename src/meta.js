@@ -1,8 +1,8 @@
 class Meta {
-  constructor(query, url = 'https://api.betterdoctor.com/2016-03-01/doctors?', skip = 0) {
-    this.query = query;
+  constructor(data, url = 'https://api.betterdoctor.com/2016-03-01/doctors?') {
     this.url = url;
-    this.skip = skip;
+    data.user_key = process.env.exports.apiKey;
+    this.data = data;
   }
 }
 
