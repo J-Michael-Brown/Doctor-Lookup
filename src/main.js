@@ -1,7 +1,7 @@
 import './styles.css';
 import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getResponse } from './doctor-list.js';
+import { getResponse } from './get-response.js';
 import { Doctor } from './doctor.js';
 import { Meta } from './meta.js';
 
@@ -12,14 +12,6 @@ $(document).ready(function() {
   let meta = new Meta({}, 'https://api.betterdoctor.com/2016-03-01/conditions?');
 
   getResponse(meta, acceptForm, failCall);
-
-  // function expandSpecialty() {
-  //   $('.specialty-title').on('click', function(event) {
-  //     event.preventDefault();
-  //     const baseId = $(this).attr('id');
-  //     $(`#${baseId}-description`).slideToggle();
-  //   });
-  // }
 
   function acceptForm(response) {
     response.data.forEach(function(condition) {
@@ -34,8 +26,6 @@ $(document).ready(function() {
       getResponse(meta, displayDoctors, failCall);
     });
   }
-
-
 
   function displayDoctors(response) {
     $('#doctors').empty();
