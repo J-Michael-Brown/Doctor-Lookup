@@ -27,42 +27,53 @@ $(document).ready(function() {
     });
     $('#query-form').submit(function(event) {
       event.preventDefault();
+
       const userQuery = $('#conditions option:selected').attr('value');
-      let doctors = [];
       const meta = new Meta({query: userQuery});
 
-      const response = getResponse(meta);
-      if(!response) {
-        $('#error-message').text('no response');
-      } else if (response.meta.error) {
-        $('#error-message').text(response.meta.message);
-      } else {
-        response.data.forEach(function(doctorSnippet) {
-          doctors.push(new Doctor(doctorSnippet));
-        });
-        displayDoctors(doctors);
-      }
+      getResponse(meta, displayDoctors, failCall);
     });
   }
 
 
 
-  function displayDoctors(doctorList) {
-    $('query-form').hide();
-    doctorList.forEach(function(doctor, doctorIndex) {
-      $('#doctors').append(`<dt id="${doctorIndex}">${doctor.profile.first_name} ${doctor.profile.middle_name}. ${doctor.profile.last_name}</dt>`);
-      $('#doctors').append(`<dd class="extended-bio" id="${doctorIndex}-info"><dd>`);
-      doctor.practices.forEach(function(practice) {
-        $(`#${doctorIndex}-info`).append(`<a href="${practice.website}">${practice.name}<a><br>`);
-      });
-      $(`#${doctorIndex}-info`).append(`<p>${doctor.profile.bio}</p>`);
-    });
+  function displayDoctors(response) {
+    $('#doctors').empty();
 
-    $('dt').on('click', function(event) {
-      event.preventDefault();
-      const doctorID = $(this).attr('id');
-      $(`#${doctorID}-info`).slideToggle();
-    });
+    let doctorList = [];
+
+    if (response.meta.error) {
+      $('#error-message').text(response.meta.message);
+    } else {
+      response.data.forEach(function(doctorSnippet) {
+        doctorList.push(new Doctor(doctorSnippet));
+      });
+
+      $('query-form').hide();
+      doctorList.forEach(function(doctor, doctorIndex) {
+        $('#doctors').append(`<dt id="${doctorIndex}">${doctor.profile.first_name} ${doctor.profile.middle_name}. ${doctor.profile.last_name}</dt>`);
+        $('#doctors').append(`<dd class="extended-bio" id="${doctorIndex}-info"><dd>`);
+
+        $(`#${doctorIndex}-info`).append('<h5 class="locations-tag">Locations</h5>');
+        $(`#${doctorIndex}-info`).append(`<ul id="${doctorIndex}-locations">`);
+        doctor.practices.forEach(function(practice) {
+          if (practice.website) {
+            $(`#${doctorIndex}-locations`).append(`<li><a href="${practice.website}">${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</a></li>`);
+          } else {
+            $(`#${doctorIndex}-locations`).append(`<li>${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</li>`);
+          }
+        });
+        $(`#${doctorIndex}`).append('</ul>');
+
+        $(`#${doctorIndex}-info`).append(`<p>${doctor.profile.bio}</p>`);
+      });
+
+      $('dt').on('click', function(event) {
+        event.preventDefault();
+        const doctorID = $(this).attr('id');
+        $(`#${doctorID}-info`).slideToggle();
+      });
+    }
   }
 
 });
