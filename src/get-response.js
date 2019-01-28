@@ -7,11 +7,10 @@ function getResponse(meta, execute, error) {
     type: 'GET',
     data: meta.data,
     success: function(response) {
-      console.log('API call successful');
       execute(response);
     },
-    error: function() {
-      error();
+    error: function(response) {
+      error(response);
     }
   });
   return apiResponse;
