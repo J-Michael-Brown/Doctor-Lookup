@@ -84,7 +84,6 @@ function getMeta() {
     data.location = locationSlug;
   }
   const meta = new Meta(data);
-  console.log(meta.data);
   return meta;
 }
 
@@ -96,19 +95,27 @@ function addDoctors(doctorList) {
     }
     $(`#${doctorIndex}`).append(`${doctor.profile.last_name}</dt>`);
     $('#doctors').append(`<dd class="extended-bio" id="${doctorIndex}-info"><dd>`);
-
-    $(`#${doctorIndex}-info`).append('<h5 class="locations-tag">Locations</h5>');
-    $(`#${doctorIndex}-info`).append(`<ul id="${doctorIndex}-locations">`);
-    doctor.practices.forEach(function(practice) {
-      if (practice.website) {
-        $(`#${doctorIndex}-locations`).append(`<li><a href="${practice.website}">${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</a></li>`);
-      } else {
-        $(`#${doctorIndex}-locations`).append(`<li>${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</li>`);
-      }
-    });
-    $(`#${doctorIndex}`).append('</ul>');
-
+    $(`#${doctorIndex}-info`).append(`<ul id="${doctorIndex}-locations"></ul>`);
+    populateLinks(doctor, doctorIndex);
     $(`#${doctorIndex}-info`).append(`<p>${doctor.profile.bio}</p>`);
+  });
+}
+
+function populateLinks(doctor, doctorIndex){
+  doctor.practices.forEach(function(practice, practiceNumber) {
+    if (practice.website) {
+      $(`#${doctorIndex}-locations`).append(`<li><a href="${practice.website}">${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</a></li>`);
+    } else {
+      $(`#${doctorIndex}-locations`).append(`<li>${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</li>`);
+    }
+    $(`#${doctorIndex}-locations`).append(`<li>accepts new patients: ${practice.accepts_new_patients}</li>`);
+    $(`#${doctorIndex}-locations`).append(`<li>Phone Number(s):<ul class="phone-number" id="${doctorIndex}-location-${practiceNumber}">`);
+    practice.phones.forEach(function(phone) {
+      $(`#${doctorIndex}-location-${practiceNumber}`).append(`<li>${phone.type.replace('_', ' ')}: ${phone.number}</li>`);
+    });
+    $(`#${doctorIndex}-location-${practiceNumber}`).append(`</ul></li>`);
+    $(`#${doctorIndex}-locations`).append('<br>');
+    practiceNumber+=1;
   });
 }
 
