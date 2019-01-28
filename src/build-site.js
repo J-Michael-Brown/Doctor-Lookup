@@ -50,7 +50,8 @@ const unitedStates = [
   {name:"Washington", abreviation: "wa"},
   {name:"West Virginia", abreviation: "wv"},
   {name:"Wisconsin", abreviation: "wi"},
-  {name:"Wyoming", abreviation: "wy"}
+  {name:"Wyoming", abreviation: "wy"},
+  {name:"Out of States", abreviation: ''}
 ];
 
 function addStates() {
@@ -61,10 +62,14 @@ function addStates() {
 }
 
 function getMeta() {
+  let data = {};
   const userQuery = $('#conditions option:selected').attr('value');
-  const meta = new Meta({query: userQuery});
+  if (userQuery) {
+    data.query = userQuery;
+  }
   const state = $('#states option:selected').attr('value');
-  const city = $('#city').attr('value');
+  const city = $('#city').val().toLowerCase();
+  const name = $('#doctor-name').val().toLowerCase();
   let locationSlug = false;
   if(state) {
     locationSlug = state;
@@ -72,15 +77,24 @@ function getMeta() {
       locationSlug+=('-' + city);
     }
   }
-  if(locationSlug) {
-    meta.data.location = locationSlug;
+  if(name) {
+    data.name=name;
   }
+  if(locationSlug) {
+    data.location = locationSlug;
+  }
+  const meta = new Meta(data);
+  console.log(meta.data);
   return meta;
 }
 
 function addDoctors(doctorList) {
   doctorList.forEach(function(doctor, doctorIndex) {
-    $('#doctors').append(`<dt id="${doctorIndex}">${doctor.profile.first_name} ${doctor.profile.middle_name}. ${doctor.profile.last_name}</dt>`);
+    $('#doctors').append(`<dt id="${doctorIndex}">${doctor.profile.first_name} `);
+    if(doctor.profile.middle_name){
+      $(`#${doctorIndex}`).append(doctor.profile.middle_name+' ');
+    }
+    $(`#${doctorIndex}`).append(`${doctor.profile.last_name}</dt>`);
     $('#doctors').append(`<dd class="extended-bio" id="${doctorIndex}-info"><dd>`);
 
     $(`#${doctorIndex}-info`).append('<h5 class="locations-tag">Locations</h5>');
