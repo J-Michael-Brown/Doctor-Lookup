@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { Meta } from './meta.js';
 
 const unitedStates = [
   {name:"Alabama", abreviation: "al"},
@@ -53,9 +54,48 @@ const unitedStates = [
 ];
 
 function addStates() {
+  // $('#states').append(`<option>no state<option>`);
   unitedStates.forEach(function(state) {
     $('#states').append(`<option value="${state.abreviation}">${state.name}<option>`);
   });
 }
 
-export { addStates };
+function getMeta() {
+  const userQuery = $('#conditions option:selected').attr('value');
+  const meta = new Meta({query: userQuery});
+  const state = $('#states option:selected').attr('value');
+  const city = $('#city').attr('value');
+  let locationSlug = false;
+  if(state) {
+    locationSlug = state;
+    if(city) {
+      locationSlug+=('-' + city);
+    }
+  }
+  if(locationSlug) {
+    meta.data.location = locationSlug;
+  }
+  return meta;
+}
+
+function addDoctors(doctorList) {
+  doctorList.forEach(function(doctor, doctorIndex) {
+    $('#doctors').append(`<dt id="${doctorIndex}">${doctor.profile.first_name} ${doctor.profile.middle_name}. ${doctor.profile.last_name}</dt>`);
+    $('#doctors').append(`<dd class="extended-bio" id="${doctorIndex}-info"><dd>`);
+
+    $(`#${doctorIndex}-info`).append('<h5 class="locations-tag">Locations</h5>');
+    $(`#${doctorIndex}-info`).append(`<ul id="${doctorIndex}-locations">`);
+    doctor.practices.forEach(function(practice) {
+      if (practice.website) {
+        $(`#${doctorIndex}-locations`).append(`<li><a href="${practice.website}">${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</a></li>`);
+      } else {
+        $(`#${doctorIndex}-locations`).append(`<li>${practice.visit_address.city} ${practice.visit_address.state}, ${practice.visit_address.street}</li>`);
+      }
+    });
+    $(`#${doctorIndex}`).append('</ul>');
+
+    $(`#${doctorIndex}-info`).append(`<p>${doctor.profile.bio}</p>`);
+  });
+}
+
+export { addStates, getMeta, addDoctors };
