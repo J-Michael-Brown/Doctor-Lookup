@@ -1,39 +1,26 @@
-### Dev goals:    
+# _Doctor Lookup_
 
-* start cranking out specs   
-
-* add meta class to set search parameters more easily
-
-* A user should be able to enter a medical issue to receive a list of doctors in the Portland area that fit the search query.
-
-* A user should be able to to enter a name to receive a list of doctors in the Portland area that fit the search query.
-
-* If the query response includes any doctors, the following information should be included about each doctor: first name, last name, address, phone number, website and whether or not the doctor is accepting new patients (the API provides this data).
-
-* If the API call results in an error (any message not a 200 OK), the application should return a notification that states what the error is.
-
-* If the query response doesn't include any doctors (for instance, if no doctors meet the search criteria), the application should return a notification that states that no doctors meet the criteria. (This is not an error so it should be handled separately from any errors.)
-
-# _{Application Name}_
-
-#### _{Brief description of application}, {Date of current version}_
+#### _A site that allows a user to look for doctors based off of available parameters_
 
 #### By _**J. Michael Brown**_
 
 ## Description
 
-_{This is a detailed description of your application. Its purpose and usage.  Give as much detail as needed to explain what the application does, and any other information you want users or other developers to have. }_
+_Better doctor has offered their help to Epicodus in allowing our (Epicodus's) students to practice using api calls to their database of doctors. A user should be able to get a list of doctors: practice locations, phone numbers, doctor's name, and whether or not they are still accepting new patients._
 
 ## Setup/Installation Requirements
 
-* _Get an API_
-* _put the API in your own .env file_
+* _[Get an API](https://developer.betterdoctor.com/) from betterdoctor_
+* _In the top level of the file, run: $touch .env_
+* _open that file, and add 'exports.apiKey = [your API key here]'_
+* _If you have node installed on your device, $npm install_
+* _run $npm start_
 
-_{Extra/ alternative methods, anything they should know?}_
+_Your site should automatically open in browser_
 
 ## Known Bugs
 
-_{Are there issues that have not yet been resolved that you want to let users know you know?  Outline any issues that would impact use of your application.  Share any workarounds that are in place. }_
+_Only the first 10 responses from a search of doctors will be displayed._
 
 ## Support and contact details
 
@@ -41,7 +28,7 @@ _J. Michael Brown @jmichaelbrown132737@gmail.com_
 
 ## Technologies Used
 
-_Ruby ver 2.5.1, Sinatra, Capybara_
+_javascript, node, api.betterdoctor_
 
 ### License
 
